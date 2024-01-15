@@ -1,2 +1,2 @@
 # ZXNextBuild
-Projects for the ZX Sectrum Next using BASIC + NextBuild
+Projects for the ZX Spectrum Next using BASIC + NextBuild
