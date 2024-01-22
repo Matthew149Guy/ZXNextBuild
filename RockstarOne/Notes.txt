@@ -1,0 +1,22 @@
+Rockstar One - Asteroids clone
+Scores
+
+Big Rock	50
+Med Rock	100
+Sml Rock	200
+
+Big Alien	500
+Sml Alien	1000
+
+Gold		1000
+Gem		1000
+
+Gold & gems are dropped when a big or medium rock is destroyed
+Big rock - 25% chance of either
+Med Rock - 20% chance of either
+They move in a different direction to the rock
+They have a lifetime
+They do slow to a stop
+There is a maximum number of gold/gems allowed on screen at the same time (I'd say one of each, or two of any)
+
+
