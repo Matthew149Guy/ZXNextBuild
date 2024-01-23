@@ -51,7 +51,7 @@ END SUB
 ' ===============
 ' === Program ===
 ' ===============
-
+RANDOMIZE
 InitialiseSystem()
 
 DIM counter AS BYTE = 0
@@ -60,6 +60,7 @@ DIM offset AS BYTE = 9
 DIM spFlags AS BYTE = 0
 DIM delaycount AS BYTE = 0
 DIM message AS STRING
+DIM fireKeyDown AS UBYTE = 0
 
 DO
     IF MultiKeys(KEYSPACE)
@@ -79,6 +80,15 @@ DO
 
         IF MultiKeys(KEYA)
             SHIP_RotateShip(1)
+        END IF
+
+        IF MultiKeys(KEYL)
+            IF fireKeyDown = 0
+                BULLET_StartBullet(Ship_X, Ship_Y, ShipAnimation(Ship_CurrentFrame, SHIP_ANIMATION_DX), ShipAnimation(Ship_CurrentFrame, SHIP_ANIMATION_DY))
+                fireKeyDown = 1
+            END IF
+        ELSE
+            fireKeyDown = 0
         END IF
 
         delaycount = 0
