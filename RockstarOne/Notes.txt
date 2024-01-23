@@ -19,4 +19,7 @@ They have a lifetime
 They do slow to a stop
 There is a maximum number of gold/gems allowed on screen at the same time (I'd say one of each, or two of any)
 
+Engine wash
+x, y, dx, dy, animation counter
+
 

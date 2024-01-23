@@ -45,7 +45,7 @@ SUB InitialiseSystem()
     ' load font
     LoadSDBank("font4.spr",0,0,0,40)
 
-    SHIP_InitialiseShip()
+    SHIP_Initialise()
 END SUB
 
 ' ===============
@@ -66,8 +66,6 @@ DO
         EXIT DO
     END IF
 
-    
-    
     IF delaycount > 3
         IF MultiKeys(KEYW)
             SHIP_ThrustShip(1)
