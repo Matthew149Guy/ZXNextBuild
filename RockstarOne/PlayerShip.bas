@@ -3,6 +3,8 @@
 ' ================
 #INCLUDE <nextlib.bas>
 #INCLUDE "./Sprites.bas"
+#INCLUDE "./Bullets.bas"
+#INCLUDE "./Rocks.bas"
 
 ' =================
 ' === Constants ===
@@ -51,6 +53,8 @@ DIM EngineWashCount AS BYTE = 0
 SUB SHIP_Initialise()
     SHIP_InitialiseShip()
     SHIP_InitialiseEngineWash()
+    BULLET_InitialiseBullets()
+    ROCK_InitialiseRocks(3)
 END SUB
 
 ' ===========================
@@ -169,6 +173,9 @@ SUB SHIP_StartEngineWash()
     END IF
 END SUB
 
+' =============================
+' === SHIP_UpdateEngineWash ===
+' =============================
 SUB SHIP_UpdateEngineWash()
     ' declare variables
     DIM index AS UBYTE = 0
@@ -327,6 +334,12 @@ SUB SHIP_UpdateShip()
     ' display engine wash
     SHIP_UpdateEngineWash()
 
+    ' display bullets
+    BULLET_UpdateBullets()
+
+    ' display rocks
+    ROCK_UpdateRocks()
+
     ' display the ship
     ' are the thrusters on?
     IF Ship_Lit = 0
@@ -357,6 +370,6 @@ SUB SHIP_ShowShipDebuggingInfo()
     'message = "SHIP_DY: " + STR(Ship_DY) + "   "
     'FL2Text(1,6,message,40)
 
-    message = "ENGINE COUNT: " + STR(UBOUND(EngineWashAnimation, 1)) + "   "
+    message = "ROCK COUNT: " + STR(RockCount) + "   "
     FL2Text(1,1,message,40)
 END SUB
