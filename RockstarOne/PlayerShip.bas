@@ -321,10 +321,10 @@ SUB SHIP_UpdateShip()
     END IF
 
     ' check for going out of bounds - y axis
-    IF Ship_Y > 273 * 16
-        Ship_Y = -15 * 16
-    ELSE IF Ship_Y < -15 * 16
-        Ship_Y = 273 * 16
+    IF Ship_Y >= 256 * 16
+        Ship_Y = 0
+    ELSE IF Ship_Y < 0
+        Ship_Y = (256 * 16) - 1
     END IF
 
     ' get screen coords for ship
