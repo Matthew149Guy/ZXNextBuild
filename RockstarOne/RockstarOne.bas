@@ -6,7 +6,7 @@
 #include <keys.bas>
 #include "./Trig.bas"
 #include "./PlayerShip.bas"
-
+#INCLUDE "./Rocks.bas"
 ' =================
 ' === Constants ===
 ' =================
@@ -45,7 +45,11 @@ SUB InitialiseSystem()
     ' load font
     LoadSDBank("font4.spr",0,0,0,40)
 
+    ' initialise player ship
     SHIP_Initialise()
+
+    ' initilaise rocks
+    ROCK_InitialiseRocks(3)
 END SUB
 
 ' ===============
@@ -93,7 +97,11 @@ DO
 
         delaycount = 0
 
+        ' display ship, engne wash & bullets
         SHIP_UpdateShip()
+        
+        ' display rocks
+        ROCK_UpdateRocks()
     END IF
 
     

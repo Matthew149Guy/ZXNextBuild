@@ -4,7 +4,7 @@
 #INCLUDE <nextlib.bas>
 #INCLUDE "./Sprites.bas"
 #INCLUDE "./Bullets.bas"
-#INCLUDE "./Rocks.bas"
+#INCLUDE "./EngineWash.bas"
 
 ' =================
 ' === Constants ===
@@ -19,15 +19,6 @@ CONST SHIP_ANIMATION_SPRITE_FLAGS AS UBYTE = 1
 CONST SHIP_ANIMATION_DX AS UBYTE = 2
 CONST SHIP_ANIMATION_DY AS UBYTE = 3
 
-CONST SHIP_ENGINE_WASH_OFFSET AS UBYTE = 50
-CONST SHIP_ENGINE_WASH_SPRITE_START AS UBYTE = 1
-CONST SHIP_ENGINE_WASH_X AS UBYTE = 0
-CONST SHIP_ENGINE_WASH_Y AS UBYTE = 1
-CONST SHIP_ENGINE_WASH_DX AS UBYTE = 2
-CONST SHIP_ENGINE_WASH_DY AS UBYTE = 3
-CONST SHIP_ENGINE_WASH_COUNTER AS UBYTE = 4
-CONST SHIP_ENGINE_WASH_MAX_PARTICLES AS UBYTE = 8
-
 ' ========================
 ' === Global Variables ===
 ' ========================
@@ -40,8 +31,6 @@ DIM Ship_DY AS INTEGER = 0
 DIM Ship_Lit AS UBYTE = 0
 DIM Ship_CurrentFrame AS BYTE = 0
 DIM ShipAnimation(24, 4) AS INTEGER
-DIM EngineWashAnimation(SHIP_ENGINE_WASH_MAX_PARTICLES, 5) AS INTEGER
-DIM EngineWashCount AS BYTE = 0
 
 ' =================
 ' === Functions ===
@@ -52,9 +41,8 @@ DIM EngineWashCount AS BYTE = 0
 ' ==================
 SUB SHIP_Initialise()
     SHIP_InitialiseShip()
-    SHIP_InitialiseEngineWash()
+    ENGINE_WASH_Initialise()
     BULLET_InitialiseBullets()
-    ROCK_InitialiseRocks(3)
 END SUB
 
 ' ===========================
@@ -124,91 +112,6 @@ SUB SHIP_InitialiseShip()
     NEXT index
 END SUB
 
-' =================================
-' === SHIP_InitialiseEngineWash ===
-' =================================
-SUB SHIP_InitialiseEngineWash()
-    ' declare variables
-    DIM index AS UBYTE    
-    
-    ' initialise engine wash count
-    EngineWashCount = 0
-
-    ' iterate over engine wash particle array
-    FOR index = 0 TO (SHIP_ENGINE_WASH_MAX_PARTICLES - 1)
-        ' init the animation counter to -1 (which will mean particle is not live)
-        EngineWashAnimation(index, SHIP_ENGINE_WASH_COUNTER) = -1
-    NEXT index
-END SUB
-
-' ============================
-' === SHIP_StartEngineWash ===
-' ============================
-SUB SHIP_StartEngineWash()
-    ' declare variables
-    DIM firstAvailable AS UBYTE = -1
-    DIM index AS UBYTE = 0
-
-    ' have we already got the max number of particles?
-    IF EngineWashCount >= SHIP_ENGINE_WASH_MAX_PARTICLES
-        RETURN
-    END IF
-
-    ' iterate over engine wash particle array
-    FOR index = 0 TO (SHIP_ENGINE_WASH_MAX_PARTICLES - 1)
-        IF EngineWashAnimation(index, SHIP_ENGINE_WASH_COUNTER) = -1
-            firstAvailable = index
-            EXIT FOR
-        END IF
-    NEXT index
-
-    ' did we find a slot?
-    IF firstAvailable > -1 AND firstAvailable < SHIP_ENGINE_WASH_MAX_PARTICLES
-        EngineWashAnimation(firstAvailable, SHIP_ENGINE_WASH_X) = Ship_X + 111 + CAST(INTEGER, RND * 64)
-        EngineWashAnimation(firstAvailable, SHIP_ENGINE_WASH_Y) = Ship_Y + 111 + CAST(INTEGER, RND * 64)
-        EngineWashAnimation(firstAvailable, SHIP_ENGINE_WASH_DX) = (0 - ShipAnimation(Ship_CurrentFrame, SHIP_ANIMATION_DX)) + CAST(INTEGER, RND * 8) - 4
-        EngineWashAnimation(firstAvailable, SHIP_ENGINE_WASH_DY) = (0 - ShipAnimation(Ship_CurrentFrame, SHIP_ANIMATION_DY)) + CAST(INTEGER, RND * 8) - 4
-        EngineWashAnimation(firstAvailable, SHIP_ENGINE_WASH_COUNTER) = 0
-        EngineWashCount = EngineWashCount + 1
-    END IF
-END SUB
-
-' =============================
-' === SHIP_UpdateEngineWash ===
-' =============================
-SUB SHIP_UpdateEngineWash()
-    ' declare variables
-    DIM index AS UBYTE = 0
-    DIM PlotX AS UINTEGER
-    DIM PlotY AS UBYTE
-    DIM frame AS UBYTE
-
-    ' have we got any particles to process?
-    IF EngineWashCount = 0
-        RETURN
-    END IF
-
-    ' iterate over engine wash particle array
-    FOR index = 0 TO (SHIP_ENGINE_WASH_MAX_PARTICLES - 1)
-        IF EngineWashAnimation(index, SHIP_ENGINE_WASH_COUNTER) > -1 AND EngineWashAnimation(index, SHIP_ENGINE_WASH_COUNTER) < 8
-            ' show the sprite
-            PlotX = CAST(UINTEGER, (EngineWashAnimation(index, SHIP_ENGINE_WASH_X) >> 4))
-            PlotY = CAST(UBYTE, (EngineWashAnimation(index, SHIP_ENGINE_WASH_Y) >> 4))
-            UpdateSprite(PlotX, PlotY, SHIP_ENGINE_WASH_SPRITE_START + index, SHIP_ENGINE_WASH_OFFSET + (EngineWashAnimation(index, SHIP_ENGINE_WASH_COUNTER) MOD 4), 0, 0)
-
-            ' update engine wash values
-            EngineWashAnimation(index, SHIP_ENGINE_WASH_X) = EngineWashAnimation(index, SHIP_ENGINE_WASH_X) + EngineWashAnimation(index, SHIP_ENGINE_WASH_DX)
-            EngineWashAnimation(index, SHIP_ENGINE_WASH_Y) = EngineWashAnimation(index, SHIP_ENGINE_WASH_Y) + EngineWashAnimation(index, SHIP_ENGINE_WASH_DY)
-            EngineWashAnimation(index, SHIP_ENGINE_WASH_COUNTER) = EngineWashAnimation(index, SHIP_ENGINE_WASH_COUNTER) + 1
-        ELSE IF EngineWashAnimation(index, SHIP_ENGINE_WASH_COUNTER) >= 8
-            ' remove the sprite
-            RemoveSprite(SHIP_ENGINE_WASH_SPRITE_START + index, 0)
-            EngineWashAnimation(index, SHIP_ENGINE_WASH_COUNTER) = -1
-            EngineWashCount = EngineWashCount - 1
-        END IF
-    NEXT index
-END SUB
-
 ' =======================
 ' === SHIP_RotateShip ===
 ' =======================
@@ -261,7 +164,7 @@ SUB SHIP_ThrustShip(thrust AS UBYTE)
         END IF
 
         ' start engine wash
-        SHIP_StartEngineWash()
+        ENGINE_WASH_Start(Ship_X, Ship_Y, Ship_DX, Ship_DY)
     ELSE
         ' we are not thrusting - set ship lit flag to off
         Ship_Lit = 0
@@ -332,13 +235,10 @@ SUB SHIP_UpdateShip()
     ShipPlot_Y = Ship_Y >> 4
     
     ' display engine wash
-    SHIP_UpdateEngineWash()
+    ENGINE_WASH_Update()
 
     ' display bullets
     BULLET_UpdateBullets()
-
-    ' display rocks
-    ROCK_UpdateRocks()
 
     ' display the ship
     ' are the thrusters on?
@@ -369,7 +269,4 @@ SUB SHIP_ShowShipDebuggingInfo()
     'FL2Text(1,5,message,40)
     'message = "SHIP_DY: " + STR(Ship_DY) + "   "
     'FL2Text(1,6,message,40)
-
-    message = "ROCK COUNT: " + STR(RockCount) + "   "
-    FL2Text(1,1,message,40)
 END SUB
