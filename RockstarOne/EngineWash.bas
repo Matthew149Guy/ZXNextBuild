@@ -1,3 +1,6 @@
+#ifndef __ENGINEWASH__
+#define __ENGINEWASH__
+
 ' ================
 ' === Includes ===
 ' ================
@@ -117,3 +120,5 @@ SUB ENGINE_WASH_Update()
         END IF
     NEXT index
 END SUB
+
+#endif

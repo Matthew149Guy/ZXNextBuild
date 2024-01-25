@@ -1,3 +1,6 @@
+#ifndef __SPRITES__
+#define __SPRITES__
+
 ' =================
 ' === Constants ===
 ' =================
@@ -10,3 +13,5 @@ CONST sprY8 AS UBYTE         =%00110
 CONST sprXmirror AS UBYTE    = %1000					
 CONST sprYmirror AS UBYTE    = %0100
 CONST sprRotate AS UBYTE     = %0010
+
+#endif

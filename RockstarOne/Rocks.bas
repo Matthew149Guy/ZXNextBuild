@@ -1,3 +1,6 @@
+#ifndef __ROCKS__
+#define __ROCKS__
+
 ' ================
 ' === Includes ===
 ' ================
@@ -172,3 +175,5 @@ SUB KillRock(index AS UBYTE)
     RockAnimation(index, ROCK_ANIMATION_COUNTER) = -1
     RockCount = RockCount - 1
 END SUB
+
+#endif

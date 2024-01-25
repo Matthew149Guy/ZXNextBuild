@@ -1,7 +1,11 @@
+#ifndef __PLAYERSHIP__
+#define __PLAYERSHIP__
+
 ' ================
 ' === Includes ===
 ' ================
 #INCLUDE <nextlib.bas>
+#include "./Trig.bas"
 #INCLUDE "./Sprites.bas"
 #INCLUDE "./Bullets.bas"
 #INCLUDE "./EngineWash.bas"
@@ -270,3 +274,5 @@ SUB SHIP_ShowShipDebuggingInfo()
     'message = "SHIP_DY: " + STR(Ship_DY) + "   "
     'FL2Text(1,6,message,40)
 END SUB
+
+#endif

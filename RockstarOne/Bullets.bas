@@ -1,3 +1,6 @@
+#ifndef __BULLETS__
+#define __BULLETS__
+
 ' ================
 ' === Includes ===
 ' ================
@@ -123,3 +126,5 @@ SUB KillBullet(index AS UBYTE)
     BulletAnimation(index, BULLET_ANIMATION_COUNTER) = -1
     BulletCount = BulletCount - 1
 END SUB
+
+#endif

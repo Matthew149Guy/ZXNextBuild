@@ -1,3 +1,6 @@
+#ifndef __TRIG__
+#define __TRIG__
+
 FUNCTION fSin(num as FIXED) as FIXED
 DIM quad as byte
 DIM est1,dif as uByte
@@ -54,3 +57,5 @@ END FUNCTION
 FUNCTION fTan(num as FIXED) as FIXED
     return fSin(num)/fSin(90-num)
 END FUNCTION
+
+#endif
