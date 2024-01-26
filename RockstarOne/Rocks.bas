@@ -66,8 +66,6 @@ SUB ROCK_InitialiseRocks(noOfRocks AS BYTE)
         rockY = CAST(INTEGER, RND * 236 * 16) + 160
 
         ROCK_StartRock(rockX, rockY, 2)
-        ROCK_StartRock(rockX, rockY, 1)
-        ROCK_StartRock(rockX, rockY, 0)
 
         rocksAdded = rocksAdded + 1
     END WHILE
@@ -169,7 +167,10 @@ SUB ROCK_UpdateRocks()
     NEXT index
 END SUB
 
-SUB KillRock(index AS UBYTE)
+' =====================
+' === ROCK_KillRock ===
+' =====================
+SUB ROCK_KillRock(index AS UBYTE)
     ' remove the sprite
     RemoveSprite(ROCK_SPRITE_START + index, 0)
     RockAnimation(index, ROCK_ANIMATION_COUNTER) = -1

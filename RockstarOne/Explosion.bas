@@ -75,16 +75,26 @@ SUB EXPLOSION_Start(x AS INTEGER, y AS INTEGER, dx AS INTEGER, dy AS INTEGER, si
 
     ' did we find a slot?
     IF firstAvailable > -1 AND firstAvailable < EXPLOSION_MAX_PARTICLES
-        
-        ' big rock?
-        IF size > 1
+
+    ' big rock?
+        IF size = 2
             ' big explosion
+            spriteFlags = sprX4 BOR sprY4
+            x = x - 256
+            y = y - 256
+        ELSE IF size = 1
+            ' med explosion
             spriteFlags = sprX2 BOR sprY2
+            x = x - 128
+            y = y - 128
+        ELSE
+        ' small explosion
+            spriteFlags = 0
         END IF
 
         ' set x/y coords
-        ExplosionAnimation(firstAvailable, EXPLOSION_X) = x + 111 + CAST(INTEGER, RND * 64)
-        ExplosionAnimation(firstAvailable, EXPLOSION_Y) = y + 111 + CAST(INTEGER, RND * 64)
+        ExplosionAnimation(firstAvailable, EXPLOSION_X) = x + CAST(INTEGER, RND * 64)
+        ExplosionAnimation(firstAvailable, EXPLOSION_Y) = y + CAST(INTEGER, RND * 64)
         
         ' set velocity
 
@@ -98,8 +108,8 @@ SUB EXPLOSION_Start(x AS INTEGER, y AS INTEGER, dx AS INTEGER, dy AS INTEGER, si
             dy = dy - (dy / 4)
         END IF
 
-        ExplosionAnimation(firstAvailable, EXPLOSION_DX) = (0 - dx) + CAST(INTEGER, RND * 8) - 4
-        ExplosionAnimation(firstAvailable, EXPLOSION_DY) = (0 - dy) + CAST(INTEGER, RND * 8) - 4
+        ExplosionAnimation(firstAvailable, EXPLOSION_DX) = dx + CAST(INTEGER, RND * 8) - 4
+        ExplosionAnimation(firstAvailable, EXPLOSION_DY) = dy + CAST(INTEGER, RND * 8) - 4
         
         ' start animation counter
         ExplosionAnimation(firstAvailable, EXPLOSION_COUNTER) = 0
@@ -132,7 +142,7 @@ SUB EXPLOSION_Update()
             ' show the sprite
             PlotX = CAST(UINTEGER, (ExplosionAnimation(index, EXPLOSION_X) >> 4))
             PlotY = CAST(UBYTE, (ExplosionAnimation(index, EXPLOSION_Y) >> 4))
-            UpdateSprite(PlotX, PlotY, EXPLOSION_SPRITE_START + index, EXPLOSION_OFFSET + (ExplosionAnimation(index, EXPLOSION_COUNTER) MOD EXPLOSION_ANIMATION_SPEED), 0, 0)
+            UpdateSprite(PlotX, PlotY, EXPLOSION_SPRITE_START + index, EXPLOSION_OFFSET + (ExplosionAnimation(index, EXPLOSION_COUNTER) / EXPLOSION_ANIMATION_SPEED), 0, ExplosionAnimation(index, EXPLOSION_SPRITE_FLAGS))
 
             ' update explosion values
             ExplosionAnimation(index, EXPLOSION_X) = ExplosionAnimation(index, EXPLOSION_X) + ExplosionAnimation(index, EXPLOSION_DX)

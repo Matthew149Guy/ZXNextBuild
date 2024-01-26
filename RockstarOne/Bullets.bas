@@ -115,12 +115,15 @@ SUB BULLET_UpdateBullets()
             BulletAnimation(index, BULLET_ANIMATION_COUNTER) = BulletAnimation(index, BULLET_ANIMATION_COUNTER) + 1
         ELSE IF BulletAnimation(index, BULLET_ANIMATION_COUNTER) >= 8
             ' kill the bullet
-            KillBullet(index)
+            BULLET_KillBullet(index)
         END IF
     NEXT index
 END SUB
 
-SUB KillBullet(index AS UBYTE)
+' =========================
+' === BULLET_KillBullet ===
+' =========================
+SUB BULLET_KillBullet(index AS UBYTE)
     ' remove the sprite
     RemoveSprite(BULLET_SPRITE_START + index, 0)
     BulletAnimation(index, BULLET_ANIMATION_COUNTER) = -1
