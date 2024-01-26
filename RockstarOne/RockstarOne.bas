@@ -6,6 +6,9 @@
 #include <keys.bas>
 #include "./Trig.bas"
 #include "./PlayerShip.bas"
+#INCLUDE "./Rocks.bas"
+#INCLUDE "./Explosion.bas"
+#INCLUDE "./Collision.bas"
 
 ' =================
 ' === Constants ===
@@ -14,7 +17,6 @@
 ' ========================
 ' === Global Variables ===
 ' ========================
-
 
 ' =================
 ' === Functions ===
@@ -45,7 +47,14 @@ SUB InitialiseSystem()
     ' load font
     LoadSDBank("font4.spr",0,0,0,40)
 
+    ' initialise player ship
     SHIP_Initialise()
+
+    ' initilaise rocks
+    ROCK_InitialiseRocks(3)
+
+    ' initialise explosions
+    EXPLOSION_Initialise()
 END SUB
 
 ' ===============
@@ -93,7 +102,17 @@ DO
 
         delaycount = 0
 
+        ' check for collisions
+        COLLISION_BulletsAndRocks()
+
+        ' display ship, engne wash & bullets
         SHIP_UpdateShip()
+        
+        ' display rocks
+        ROCK_UpdateRocks()
+
+        ' display explosions
+        EXPLOSION_Update()
     END IF
 
     

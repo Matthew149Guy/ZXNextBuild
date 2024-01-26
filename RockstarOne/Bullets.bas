@@ -1,3 +1,6 @@
+#ifndef __BULLETS__
+#define __BULLETS__
+
 ' ================
 ' === Includes ===
 ' ================
@@ -63,10 +66,10 @@ SUB BULLET_StartBullet(x AS INTEGER, y AS INTEGER, dx AS INTEGER, dy AS INTEGER)
 
     ' did we find a slot?
     IF firstAvailable > -1 AND firstAvailable < BULLET_MAX_BULLETS
-        BulletAnimation(firstAvailable, BULLET_ANIMATION_X) = x + (dx * 16)
-        BulletAnimation(firstAvailable, BULLET_ANIMATION_Y) = y + (dy * 16)
-        BulletAnimation(firstAvailable, BULLET_ANIMATION_DX) = dx * 16
-        BulletAnimation(firstAvailable, BULLET_ANIMATION_DY) = dy * 16
+        BulletAnimation(firstAvailable, BULLET_ANIMATION_X) = x + (dx * 12)
+        BulletAnimation(firstAvailable, BULLET_ANIMATION_Y) = y + (dy * 12)
+        BulletAnimation(firstAvailable, BULLET_ANIMATION_DX) = dx * 12
+        BulletAnimation(firstAvailable, BULLET_ANIMATION_DY) = dy * 12
         BulletAnimation(firstAvailable, BULLET_ANIMATION_COUNTER) = 0
         BulletCount = BulletCount + 1
     END IF
@@ -103,23 +106,28 @@ SUB BULLET_UpdateBullets()
             END IF
 
             ' check for going out of bounds - y axis
-            IF BulletAnimation(index, BULLET_ANIMATION_Y) > 273 * 16
-                BulletAnimation(index, BULLET_ANIMATION_Y) = -15 * 16
-            ELSE IF BulletAnimation(index, BULLET_ANIMATION_Y) < -15 * 16
-                BulletAnimation(index, BULLET_ANIMATION_Y) = 273 * 16
+            IF BulletAnimation(index, BULLET_ANIMATION_Y) >= 256 * 16
+                BulletAnimation(index, BULLET_ANIMATION_Y) = 0
+            ELSE IF BulletAnimation(index, BULLET_ANIMATION_Y) < 0
+                BulletAnimation(index, BULLET_ANIMATION_Y) = (256 * 16) -1
             END IF
 
             BulletAnimation(index, BULLET_ANIMATION_COUNTER) = BulletAnimation(index, BULLET_ANIMATION_COUNTER) + 1
         ELSE IF BulletAnimation(index, BULLET_ANIMATION_COUNTER) >= 8
             ' kill the bullet
-            KillBullet(index)
+            BULLET_KillBullet(index)
         END IF
     NEXT index
 END SUB
 
-SUB KillBullet(index AS UBYTE)
+' =========================
+' === BULLET_KillBullet ===
+' =========================
+SUB BULLET_KillBullet(index AS UBYTE)
     ' remove the sprite
     RemoveSprite(BULLET_SPRITE_START + index, 0)
     BulletAnimation(index, BULLET_ANIMATION_COUNTER) = -1
     BulletCount = BulletCount - 1
 END SUB
+
+#endif

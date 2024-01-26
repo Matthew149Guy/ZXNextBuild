@@ -1,3 +1,6 @@
+#ifndef __ROCKS__
+#define __ROCKS__
+
 ' ================
 ' === Includes ===
 ' ================
@@ -63,8 +66,6 @@ SUB ROCK_InitialiseRocks(noOfRocks AS BYTE)
         rockY = CAST(INTEGER, RND * 236 * 16) + 160
 
         ROCK_StartRock(rockX, rockY, 2)
-        ROCK_StartRock(rockX, rockY, 1)
-        ROCK_StartRock(rockX, rockY, 0)
 
         rocksAdded = rocksAdded + 1
     END WHILE
@@ -133,7 +134,7 @@ SUB ROCK_UpdateRocks()
         IF RockAnimation(index, ROCK_ANIMATION_COUNTER) > -1
             ' show the sprite
             PlotX = CAST(INTEGER, (RockAnimation(index, ROCK_ANIMATION_X) >> 4))
-            PlotY = CAST(BYTE, (RockAnimation(index, ROCK_ANIMATION_Y) >> 4))
+            PlotY = CAST(INTEGER, (RockAnimation(index, ROCK_ANIMATION_Y) >> 4))
 
             UpdateSprite(PlotX, PlotY, ROCK_SPRITE_START + index, RockAnimation(index, ROCK_ANIMATION_SPRITE_SET) + (RockAnimation(index, ROCK_ANIMATION_COUNTER) >> 1), 0, RockAnimation(index, ROCK_ANIMATION_SPRITE_FLAGS))
 
@@ -149,10 +150,10 @@ SUB ROCK_UpdateRocks()
             END IF
 
             ' check for going out of bounds - y axis
-            IF RockAnimation(index, ROCK_ANIMATION_Y) > 273 * 16
-                RockAnimation(index, ROCK_ANIMATION_Y) = -31 * 16
-            ELSE IF RockAnimation(index, ROCK_ANIMATION_Y) < -31 * 16
-                RockAnimation(index, ROCK_ANIMATION_Y) = 273 * 16
+            IF RockAnimation(index, ROCK_ANIMATION_Y) >= 256 * 16
+                RockAnimation(index, ROCK_ANIMATION_Y) = 0
+            ELSE IF RockAnimation(index, ROCK_ANIMATION_Y) < 0
+                RockAnimation(index, ROCK_ANIMATION_Y) = (256 * 16) - 1
             END IF
 
             ' incrememnt rock animation counter
@@ -166,9 +167,14 @@ SUB ROCK_UpdateRocks()
     NEXT index
 END SUB
 
-SUB KillRock(index AS UBYTE)
+' =====================
+' === ROCK_KillRock ===
+' =====================
+SUB ROCK_KillRock(index AS UBYTE)
     ' remove the sprite
     RemoveSprite(ROCK_SPRITE_START + index, 0)
     RockAnimation(index, ROCK_ANIMATION_COUNTER) = -1
     RockCount = RockCount - 1
 END SUB
+
+#endif
