@@ -22,4 +22,21 @@ There is a maximum number of gold/gems allowed on screen at the same time (I'd s
 Engine wash
 x, y, dx, dy, animation counter
 
+Two modes of friction
+High/Thin Atmosphere - friction is applied
+Deep Space - zero friction
 
+Different backgrounds for each mode (maybe load background from SD Card)
+
+Alien - Setting up - things to choose at random
+
+1. Big Alien or Small Alien
+2. Left to Right or Right to Left
+3. Velocity and angle, +60 degrees, +45, +30, -30, -45, -60
+4. Set y-bounding, alien inverts  y direction when it "bounces" on the y backgrounds
+5. Alien is "dead" once gone off screen#
+6. When shot, alien blows up and shows bonus score sprite, also 50% chance of a gem dropping as loot from small alien, big alien drops gold (50%)
+
+Gold and Gem have a lifetime *20/30 seconds - they flash during glast 5 seconds
+
+When starting a new level or a new player ship life, the ship has a grace period of n seconds where it cannot be destroyed - swap between ship and shield
