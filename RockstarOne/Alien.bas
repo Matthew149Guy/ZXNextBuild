@@ -10,7 +10,7 @@
 ' =================
 ' === Constants ===
 ' =================
-CONST ALIEN_SPRITE_INDEX AS UBYTE = 64
+CONST ALIEN_SPRITE_INDEX AS UBYTE = 96
 CONST ALIEN_SPRITE_OFFSET AS UBYTE = 15
 CONST ALIEN_ANIMATION_FRAME AS UBYTE = 0
 CONST ALIEN_ANIMATION_SPRITE_FLAGS AS UBYTE = 1
@@ -43,7 +43,7 @@ DIM Alien_Status AS UBYTE = ALIEN_STATUS_SLEEP
 DIM AlienAnimation(4, 2) AS INTEGER
 DIM AlienStartOptions(12, 3) AS INTEGER
 DIM AlienSleepCounter AS INTEGER = 0
-DIM AlienSleepTime = 600
+DIM AlienSleepTime AS UINTEGER = 600
 
 ' =================
 ' === Functions ===
@@ -119,13 +119,13 @@ SUB ALIEN_InitialiseStartUpOption(index AS UBYTE, x AS INTEGER, angle AS FIXED)
     radians = angle * PI / 180
 
     ' compute the dx & dy components for the thruster velocity to apply for this direction
-    dx = CAST(INTEGER, SIN(radians)*15) * 1
-    dy = CAST(INTEGER, COS(radians)*15) * -1
+    dx = CAST(INTEGER, (SIN(radians)*16) + 0.5) * 1
+    dy = CAST(INTEGER, (COS(radians)*16) + 0.5) * -1
 
     ' store the values
-    AlienStartUpOptions(index, ALIEN_OPTIONS_X) = x
-    AlienStartUpOptions(index, ALIEN_OPTIONS_DX) = dx
-    AlienStartUpOptions(index, ALIEN_OPTIONS_DY) = dy
+    AlienStartOptions(index, ALIEN_OPTIONS_X) = x
+    AlienStartOptions(index, ALIEN_OPTIONS_DX) = dx
+    AlienStartOptions(index, ALIEN_OPTIONS_DY) = dy
 
 END SUB
 
@@ -138,19 +138,19 @@ SUB ALIEN_StartAlien()
         RETURN
     END IF
 
+    ' get y value at random
+    Alien_Y = CAST(INTEGER, ((RND * (ALIEN_MAX_Y - ALIEN_MIN_Y)) + 0.5)) + ALIEN_MIN_Y
+
+    ' get alien size at random
+    Alien_Size = CAST(UBYTE, (RND * 1) + 0.5)
+
     ' pick a start index
     startIndex = CAST(UBYTE, (RND * 12) + 0.5)
 
     ' get the values
-    Alien_X = AlienStartUpOptions(index, ALIEN_OPTIONS_X)
-    Alien_DX = AlienStartUpOptions(index, ALIEN_OPTIONS_DX)
-    Alien_DY = AlienStartUpOptions(index, ALIEN_OPTIONS_DY)
-
-    ' get y value at random
-    Alien_Y = CAST(INTEGER((RND * (ALIEN_MAX_Y - ALIEN_MIN_Y)) + 0.5)) + ALIEN_MIN_Y
-
-    ' get alien size at random
-    Alien_Size = CAST(UBYTE, (RND * 1) + 0.5)
+    Alien_X = AlienStartOptions(startIndex, ALIEN_OPTIONS_X)
+    Alien_DX = AlienStartOptions(startIndex, ALIEN_OPTIONS_DX) * (3 - Alien_Size)
+    Alien_DY = AlienStartOptions(startIndex, ALIEN_OPTIONS_DY) * (3 - Alien_Size)
 
     ' are we staring on the left?
     IF Alien_X = 0
@@ -172,6 +172,8 @@ END SUB
 
 SUB ALIEN_UpdateAlien()
     DIM sizeFlags AS UBYTE = ALIEN_ANIMATION_SIZE_SMALL
+
+    ALIEN_ShowDebuggingInfo()
     ' is the alien asleep?
     IF Alien_Status = ALIEN_STATUS_SLEEP
         ' check if we can start the alien yet
@@ -198,8 +200,8 @@ SUB ALIEN_UpdateAlien()
     Alien_Y = Alien_Y + Alien_DY
     Alien_CurrentFrame = Alien_CurrentFrame + 1
 
-    ' check frame has not gone bigger than 3
-    IF Alien_CurrentFrame >= 4
+    ' check frame has not gone bigger than 8
+    IF Alien_CurrentFrame >= 8
         Alien_CurrentFrame = 0
     END IF
 
@@ -213,14 +215,14 @@ SUB ALIEN_UpdateAlien()
     END IF
 
     ' check x bounds and kill the alien if exceeded
-    IF Alien_X >= 320 * 16 OR Alien_X <= (16 * Alien_Size * 16)
+    IF Alien_X >= 320 * 16 OR Alien_X <= -512
         RemoveSprite(ALIEN_SPRITE_INDEX,0)
         ALIEN_Sleep()
     END IF
 
     ' get screen coords
-    AlienPlot_X = Alien_X >> 4
-    AlienPlot_Y - Alien_Y >> 4
+    AlienPlot_X = CAST(UINTEGER, (Alien_X / 16))
+    AlienPlot_Y = CAST(UBYTE, (Alien_Y / 16))
 
     ' get size flags
     IF Alien_Size = ALIEN_SIZE_LARGE
@@ -232,9 +234,28 @@ SUB ALIEN_UpdateAlien()
          AlienPlot_X, _
          AlienPlot_Y, _
          ALIEN_SPRITE_INDEX, _
-         AlienAnimation(Alien_CurrentFrame, ALIEN_ANIMATION_FRAME), _
-         AlienAnimation(Alien_CurrentFrame, ALIEN_ANIMATION_SPRITE_FLAGS), _
+         AlienAnimation(Alien_CurrentFrame/2, ALIEN_ANIMATION_FRAME), _
+         AlienAnimation(Alien_CurrentFrame/2, ALIEN_ANIMATION_SPRITE_FLAGS), _
          sizeFlags)
+
+    
+END SUB
+
+SUB ALIEN_ShowDebuggingInfo()
+    ' ship debugging info
+    DIM message AS STRING
+    message = "ALIEN X: " + STR(Alien_X) + "   "
+    FL2Text(1,1,message,40)
+    message = "ALIEN Y: " + STR(Alien_Y) + "   "
+    FL2Text(1,2,message,40)
+    message = "STATUS: " + STR(Alien_Status) + "   "
+    FL2Text(1,3,message,40)
+    message = "COUNTDOWN: " + STR(AlienSleepTime - AlienSleepCounter) + "   "
+    FL2Text(1,4,message,40)
+    'message = "SHIP_DX: " + STR(Ship_DX) + "   "
+    'FL2Text(1,5,message,40)
+    'message = "SHIP_DY: " + STR(Ship_DY) + "   "
+    'FL2Text(1,6,message,40)
 END SUB
 
 #endif

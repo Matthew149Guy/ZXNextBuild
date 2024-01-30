@@ -8,6 +8,7 @@
 #include "./PlayerShip.bas"
 #INCLUDE "./Rocks.bas"
 #INCLUDE "./Explosion.bas"
+#INCLUDE "./Alien.bas"
 #INCLUDE "./Collision.bas"
 
 ' =================
@@ -55,6 +56,9 @@ SUB InitialiseSystem()
 
     ' initialise explosions
     EXPLOSION_Initialise()
+
+    ' initialise alien
+    ALIEN_Initialise()
 END SUB
 
 ' ===============
@@ -110,6 +114,9 @@ DO
         
         ' display rocks
         ROCK_UpdateRocks()
+
+        ' update alien
+        ALIEN_UpdateAlien()
 
         ' display explosions
         EXPLOSION_Update()
