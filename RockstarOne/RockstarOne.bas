@@ -4,11 +4,12 @@
 #DEFINE NEX
 #INCLUDE <nextlib.bas>
 #include <keys.bas>
-#include "./Trig.bas"
 #include "./PlayerShip.bas"
 #INCLUDE "./Rocks.bas"
 #INCLUDE "./Explosion.bas"
+#INCLUDE "./Alien.bas"
 #INCLUDE "./Collision.bas"
+#INCLUDE "./BonusScore2.bas"
 
 ' =================
 ' === Constants ===
@@ -55,6 +56,12 @@ SUB InitialiseSystem()
 
     ' initialise explosions
     EXPLOSION_Initialise()
+
+    ' initialise alien
+    ALIEN_Initialise()
+
+    ' initialise bonus scores
+    BONUS_SCORE_Initialise()
 END SUB
 
 ' ===============
@@ -104,6 +111,7 @@ DO
 
         ' check for collisions
         COLLISION_BulletsAndRocks()
+        COLLISION_BulletsAndAlien()
 
         ' display ship, engne wash & bullets
         SHIP_UpdateShip()
@@ -111,8 +119,14 @@ DO
         ' display rocks
         ROCK_UpdateRocks()
 
+        ' update alien
+        ALIEN_UpdateAlien()
+
         ' display explosions
         EXPLOSION_Update()
+
+        ' display bonus scores
+        BONUS_SCORE_Update()
     END IF
 
     

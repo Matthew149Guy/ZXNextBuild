@@ -40,9 +40,9 @@ DIM ShipAnimation(24, 4) AS INTEGER
 ' === Functions ===
 ' =================
 
-' ==================
-' === Initialise ===
-' ==================
+' =======================
+' === SHIP_Initialise ===
+' =======================
 SUB SHIP_Initialise()
     SHIP_InitialiseShip()
     ENGINE_WASH_Initialise()
