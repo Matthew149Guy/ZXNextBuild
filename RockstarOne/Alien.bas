@@ -237,21 +237,27 @@ SUB ALIEN_UpdateAlien()
          AlienAnimation(Alien_CurrentFrame/2, ALIEN_ANIMATION_FRAME), _
          AlienAnimation(Alien_CurrentFrame/2, ALIEN_ANIMATION_SPRITE_FLAGS), _
          sizeFlags)
+END SUB
 
-    
+' =======================
+' === ALIEN_KillAlien ===
+' =======================
+SUB ALIEN_KillAlien()
+    RemoveSprite(ALIEN_SPRITE_INDEX,0)
+    ALIEN_Sleep()
 END SUB
 
 SUB ALIEN_ShowDebuggingInfo()
     ' ship debugging info
     DIM message AS STRING
-    message = "ALIEN X: " + STR(Alien_X) + "   "
+    'message = "ALIEN X: " + STR(Alien_X) + "   "
+    'FL2Text(1,1,message,40)
+    'message = "ALIEN Y: " + STR(Alien_Y) + "   "
+    'FL2Text(1,2,message,40)
+    'message = "STATUS: " + STR(Alien_Status) + "   "
+    'FL2Text(1,3,message,40)
+    message = "ALIEN COUNTDOWN: " + STR(AlienSleepTime - AlienSleepCounter) + "   "
     FL2Text(1,1,message,40)
-    message = "ALIEN Y: " + STR(Alien_Y) + "   "
-    FL2Text(1,2,message,40)
-    message = "STATUS: " + STR(Alien_Status) + "   "
-    FL2Text(1,3,message,40)
-    message = "COUNTDOWN: " + STR(AlienSleepTime - AlienSleepCounter) + "   "
-    FL2Text(1,4,message,40)
     'message = "SHIP_DX: " + STR(Ship_DX) + "   "
     'FL2Text(1,5,message,40)
     'message = "SHIP_DY: " + STR(Ship_DY) + "   "

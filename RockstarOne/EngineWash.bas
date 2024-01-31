@@ -16,7 +16,7 @@ CONST ENGINE_WASH_Y AS UBYTE = 1
 CONST ENGINE_WASH_DX AS UBYTE = 2
 CONST ENGINE_WASH_DY AS UBYTE = 3
 CONST ENGINE_WASH_COUNTER AS UBYTE = 4
-CONST ENGINE_WASH_MAX_PARTICLES AS UBYTE = 8
+CONST ENGINE_WASH_MAX_PARTICLES AS UBYTE = 12
 
 ' ========================
 ' === Global Variables ===
@@ -75,8 +75,10 @@ SUB ENGINE_WASH_Start(x AS INTEGER, y AS INTEGER, dx AS INTEGER, dy AS INTEGER)
         EngineWashAnimation(firstAvailable, ENGINE_WASH_Y) = y + 111 + CAST(INTEGER, RND * 64)
         
         ' set velocity
-        EngineWashAnimation(firstAvailable, ENGINE_WASH_DX) = (0 - dx) + CAST(INTEGER, RND * 8) - 4
-        EngineWashAnimation(firstAvailable, ENGINE_WASH_DY) = (0 - dy) + CAST(INTEGER, RND * 8) - 4
+        'EngineWashAnimation(firstAvailable, ENGINE_WASH_DX) = (0 - dx) + CAST(INTEGER, RND * 8) - 4
+        'EngineWashAnimation(firstAvailable, ENGINE_WASH_DY) = (0 - dy) + CAST(INTEGER, RND * 8) - 4
+        EngineWashAnimation(firstAvailable, ENGINE_WASH_DX) = (0 - (dx / 2))
+        EngineWashAnimation(firstAvailable, ENGINE_WASH_DY) = (0 - (dy / 2))
         
         ' start animation counter
         EngineWashAnimation(firstAvailable, ENGINE_WASH_COUNTER) = 0
@@ -102,7 +104,7 @@ SUB ENGINE_WASH_Update()
 
     ' iterate over engine wash particle array
     FOR index = 0 TO (ENGINE_WASH_MAX_PARTICLES - 1)
-        IF EngineWashAnimation(index, ENGINE_WASH_COUNTER) > -1 AND EngineWashAnimation(index, ENGINE_WASH_COUNTER) < 8
+        IF EngineWashAnimation(index, ENGINE_WASH_COUNTER) > -1 AND EngineWashAnimation(index, ENGINE_WASH_COUNTER) < 12
             ' show the sprite
             PlotX = CAST(UINTEGER, (EngineWashAnimation(index, ENGINE_WASH_X) >> 4))
             PlotY = CAST(UBYTE, (EngineWashAnimation(index, ENGINE_WASH_Y) >> 4))
@@ -112,7 +114,7 @@ SUB ENGINE_WASH_Update()
             EngineWashAnimation(index, ENGINE_WASH_X) = EngineWashAnimation(index, ENGINE_WASH_X) + EngineWashAnimation(index, ENGINE_WASH_DX)
             EngineWashAnimation(index, ENGINE_WASH_Y) = EngineWashAnimation(index, ENGINE_WASH_Y) + EngineWashAnimation(index, ENGINE_WASH_DY)
             EngineWashAnimation(index, ENGINE_WASH_COUNTER) = EngineWashAnimation(index, ENGINE_WASH_COUNTER) + 1
-        ELSE IF EngineWashAnimation(index, ENGINE_WASH_COUNTER) >= 8
+        ELSE IF EngineWashAnimation(index, ENGINE_WASH_COUNTER) >= 12
             ' remove the sprite
             RemoveSprite(ENGINE_WASH_SPRITE_START + index, 0)
             EngineWashAnimation(index, ENGINE_WASH_COUNTER) = -1
