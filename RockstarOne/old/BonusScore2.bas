@@ -88,7 +88,7 @@ SUB BONUS_SCORE_Update()
 
         frame = frame + offset
 
-        UpdateSprite(PlotX, PlotY, BONUS_SCORE_SPRITE_START + index, frame, 0, 0)
+        UpdateSprite(PlotX, PlotY, BONUS_SCORE_SPRITE_START, frame, 0, 0)
 
         ' update engine wash values
         BonusScore_X = BonusScore_X + BonusScore_DX
@@ -96,7 +96,7 @@ SUB BONUS_SCORE_Update()
         BonusScore_COUNTER = BonusScore_COUNTER + 1
     ELSE IF BonusScore_COUNTER >= 32
         ' remove the sprite
-        RemoveSprite(BONUS_SCORE_SPRITE_START + index, 0)
+        RemoveSprite(BONUS_SCORE_SPRITE_START, 0)
         BonusScore_COUNTER = -1
     END IF
 END SUB

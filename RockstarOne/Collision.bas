@@ -10,7 +10,7 @@
 #INCLUDE "./PlayerShip.bas"
 #INCLUDE "./Rocks.bas"
 #INCLUDE "./Alien.bas"
-#INCLUDE "./BonusScore2.bas"
+#INCLUDE "./BonusScore.bas"
 
 ' =================
 ' === Constants ===

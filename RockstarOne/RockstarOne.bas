@@ -1,3 +1,6 @@
+'!org=24576
+'!heap=4096
+
 ' ================
 ' === Includes ===
 ' ================
@@ -9,7 +12,7 @@
 #INCLUDE "./Explosion.bas"
 #INCLUDE "./Alien.bas"
 #INCLUDE "./Collision.bas"
-#INCLUDE "./BonusScore2.bas"
+#INCLUDE "./BonusScore.bas"
 
 ' =================
 ' === Constants ===
@@ -47,6 +50,10 @@ SUB InitialiseSystem()
 
     ' load font
     LoadSDBank("font4.spr",0,0,0,40)
+
+    ' load sfx data
+    LoadSDBank("RockstarOneSFX.afb", 0, 0, 0, 41)
+    InitSFX(41)
 
     ' initialise player ship
     SHIP_Initialise()
