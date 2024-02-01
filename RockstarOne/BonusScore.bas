@@ -18,6 +18,7 @@ CONST BONUS_SCORE_DY AS UBYTE = 3
 CONST BONUS_SCORE_SPRITE_OFFSET AS UBYTE = 4
 CONST BONUS_SCORE_COUNTER AS UBYTE = 5
 CONST BONUS_SCORE_MAX_PARTICLES AS UBYTE = 4
+CONST BONUS_SCORE_LIFETIME AS UBYTE = 24
 
 ' ========================
 ' === Global Variables ===
@@ -35,7 +36,6 @@ DIM BonusScoreCount AS BYTE = 0
 SUB BONUS_SCORE_Initialise()
     ' declare variables
     DIM index AS UBYTE 
-    DIM box AS INTEGER
     
     ' initialise engine wash count
     BonusScoreCount = 0
@@ -77,8 +77,6 @@ SUB BONUS_SCORE_Start(x AS INTEGER, y AS INTEGER, dx AS INTEGER, dy AS INTEGER, 
         BonusScoreAnimation(firstAvailable, BONUS_SCORE_Y) = y + 111 + CAST(INTEGER, RND * 64)
         
         ' set velocity
-        'BonusScoreAnimation(firstAvailable, BONUS_SCORE_DX) = (0 - dx) + CAST(INTEGER, RND * 8) - 4
-        'BonusScoreAnimation(firstAvailable, BONUS_SCORE_DY) = (0 - dy) + CAST(INTEGER, RND * 8) - 4
         BonusScoreAnimation(firstAvailable, BONUS_SCORE_DX) = dx / 4
         BonusScoreAnimation(firstAvailable, BONUS_SCORE_DY) = dy / 4
         
@@ -101,36 +99,31 @@ SUB BONUS_SCORE_Update()
     DIM index AS BYTE = 0
     DIM PlotX AS UINTEGER = 0
     DIM PlotY AS UBYTE = 0
-    DIM spriteId AS BYTE = 0
     DIM frame AS UBYTE = 0
-    DIM offset AS UBYTE = 0
 
     ' have we got any particles to process?
     IF BonusScoreCount = 0
         RETURN
     END IF
 
-    ' iterate over engine wash particle array
+    ' iterate over scores particle array
     FOR index = 0 TO (BONUS_SCORE_MAX_PARTICLES - 1)
-        IF BonusScoreAnimation(index, BONUS_SCORE_COUNTER) > -1 AND BonusScoreAnimation(index, BONUS_SCORE_COUNTER) < 16
-            ' show the sprite
+        IF BonusScoreAnimation(index, BONUS_SCORE_COUNTER) > -1 AND BonusScoreAnimation(index, BONUS_SCORE_COUNTER) < BONUS_SCORE_LIFETIME
+            ' get screen coords
             PlotX = CAST(UINTEGER, (BonusScoreAnimation(index, BONUS_SCORE_X) / 16))
             PlotY = CAST(UBYTE, (BonusScoreAnimation(index, BONUS_SCORE_Y) / 16))
             
-            frame = CAST(UBYTE, BonusScoreAnimation(index, BONUS_SCORE_SPRITE_OFFSET))
-            offset = BonusScoreAnimation(index, BONUS_SCORE_COUNTER) MOD 4
+            ' get the correct frame
+            frame = CAST(UBYTE, BonusScoreAnimation(index, BONUS_SCORE_SPRITE_OFFSET)) + (BonusScoreAnimation(index, BONUS_SCORE_COUNTER) MOD 4)
 
-            frame = frame + offset
-
-            spriteId = 100 + index
-            FL2Text(0, 0, "HELLO", 40)
+            ' show the sprite
             UpdateSprite(PlotX, PlotY, BONUS_SCORE_SPRITE_START + index, frame, 0, 0)
 
-            ' update engine wash values
+            ' update score animation values
             BonusScoreAnimation(index, BONUS_SCORE_X) = BonusScoreAnimation(index, BONUS_SCORE_X) + BonusScoreAnimation(index, BONUS_SCORE_DX)
             BonusScoreAnimation(index, BONUS_SCORE_Y) = BonusScoreAnimation(index, BONUS_SCORE_Y) + BonusScoreAnimation(index, BONUS_SCORE_DY)
             BonusScoreAnimation(index, BONUS_SCORE_COUNTER) = BonusScoreAnimation(index, BONUS_SCORE_COUNTER) + 1
-        ELSE IF BonusScoreAnimation(index, BONUS_SCORE_COUNTER) >= 16
+        ELSE IF BonusScoreAnimation(index, BONUS_SCORE_COUNTER) >= BONUS_SCORE_LIFETIME
             ' remove the sprite
             RemoveSprite(BONUS_SCORE_SPRITE_START + index, 0)
             BonusScoreAnimation(index, BONUS_SCORE_COUNTER) = -1

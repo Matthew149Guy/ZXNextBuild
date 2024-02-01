@@ -6,6 +6,8 @@
 ' ================
 #INCLUDE <nextlib.bas>
 #INCLUDE "./Sprites.bas"
+#INCLUDE "./PlayerShip.bas"
+#INCLUDE "./AlienBullet.bas"
 
 ' =================
 ' === Constants ===
@@ -44,6 +46,8 @@ DIM AlienAnimation(4, 2) AS INTEGER
 DIM AlienStartOptions(12, 3) AS INTEGER
 DIM AlienSleepCounter AS INTEGER = 0
 DIM AlienSleepTime AS UINTEGER = 600
+DIM AlienLiveCounter AS INTEGER = 0
+DIM AlienLiveTime AS INTEGER = 64
 
 ' =================
 ' === Functions ===
@@ -54,6 +58,7 @@ DIM AlienSleepTime AS UINTEGER = 600
 ' =======================
 SUB ALIEN_Initialise()
     ALIEN_InitialiseAlien()
+    ALIEN_BULLET_Initialise()
 END SUB
 
 SUB ALIEN_InitialiseAlien()
@@ -168,12 +173,33 @@ SUB ALIEN_StartAlien()
     ' set status
     Alien_Status = ALIEN_STATUS_LIVE
 
+    ' set timing values for shooting
+    AlienLiveCounter = 0
+
+    IF Alien_Size = 0
+        AlienLiveTime = 32
+    ELSE
+        AlienLiveTime = 64
+    END IF
+
+    ALIEN_BULLET_Initialise()
+
 END SUB
 
 SUB ALIEN_UpdateAlien()
     DIM sizeFlags AS UBYTE = ALIEN_ANIMATION_SIZE_SMALL
+    DIM posModifier AS INTEGER = 0
+    DIM dx AS INTEGER = 0
+    DIM dy AS INTEGER = 0
+    DIM modulus AS FIXED = 0
+    DIM ratioX AS FIXED = 0
+    DIM ratioY AS FIXED = 0
 
-    ALIEN_ShowDebuggingInfo()
+    'ALIEN_ShowDebuggingInfo()
+    
+    ' update any alien bullets
+    ALIEN_BULLET_Update()
+    
     ' is the alien asleep?
     IF Alien_Status = ALIEN_STATUS_SLEEP
         ' check if we can start the alien yet
@@ -193,6 +219,37 @@ SUB ALIEN_UpdateAlien()
     IF Alien_Status <> ALIEN_STATUS_LIVE
         ' nope, nothing else to do, exit
         RETURN
+    END IF
+
+    ' do we shoot?
+    IF AlienLiveCounter >= AlienLiveTime
+        ' calculate x & y based`on alien position & size
+        IF Alien_Size = 0
+            posModifier = 63
+        ELSE
+            posModifier = 127
+        END IF  
+
+        ' calculate dx and dy to aim at the player - but add in a little randomness, we don't want an alien aim bot
+        dx = (Ship_X - Alien_X) / 16
+        dy = (Ship_Y - Alien_Y) / 16
+
+        modulus = SQR((dx * dx) + (dy * dy))
+
+        ratioX = CAST(FIXED, CAST(FIXED, dx) / modulus)
+        ratioY = CAST(FIXED, CAST(FIXED, dy) / modulus)
+
+        dx = CAST(INTEGER, (ratioX * 160) + 0.5) + CAST(INTEGER, RND * 32) - 16
+        dy = CAST(INTEGER, (ratioY * 160) + 0.5) + CAST(INTEGER, RND * 32) - 16
+
+        ' start an alien bullet
+        ALIEN_BULLET_Start(Alien_X + posModifier, Alien_Y + posModifier, dx, dy)
+
+        ' reset alien live counter
+        AlienLiveCounter = 0
+    ELSE
+        ' increment alien live counter
+        AlienLiveCounter = AlienLiveCounter + 1
     END IF
 
     ' update x,y & frame
@@ -256,6 +313,8 @@ SUB ALIEN_ShowDebuggingInfo()
     'FL2Text(1,2,message,40)
     'message = "STATUS: " + STR(Alien_Status) + "   "
     'FL2Text(1,3,message,40)
+    message = "ALIEN LIVE: " + STR(AlienLiveTime - AlienLiveCounter) + "   "
+    FL2Text(0,0,message,40)
     message = "ALIEN COUNTDOWN: " + STR(AlienSleepTime - AlienSleepCounter) + "   "
     FL2Text(1,1,message,40)
     'message = "SHIP_DX: " + STR(Ship_DX) + "   "
