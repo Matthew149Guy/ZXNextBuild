@@ -29,6 +29,7 @@ CONST ALIEN_MAX_Y AS INTEGER = 224 * 16
 CONST ALIEN_OPTIONS_X AS UBYTE = 0
 CONST ALIEN_OPTIONS_DX AS UBYTE = 1
 CONST ALIEN_OPTIONS_DY AS UBYTE = 2
+CONST ALIEN_SOUND_LIFETIME AS UBYTE = 12
 
 ' ========================
 ' === Global Variables ===
@@ -219,6 +220,11 @@ SUB ALIEN_UpdateAlien()
     IF Alien_Status <> ALIEN_STATUS_LIVE
         ' nope, nothing else to do, exit
         RETURN
+    END IF
+
+    ' do we make a sound?
+    IF AlienLiveCounter MOD 12 = 0
+        PlaySFX(5)
     END IF
 
     ' do we shoot?

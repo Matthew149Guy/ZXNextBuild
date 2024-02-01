@@ -119,6 +119,9 @@ SUB EXPLOSION_Start(x AS INTEGER, y AS INTEGER, dx AS INTEGER, dy AS INTEGER, si
 
         ' increment explosion count
         ExplosionCount = ExplosionCount + 1
+
+        ' play explosion sound
+        PlaySFX(113)
     END IF
 END SUB
 

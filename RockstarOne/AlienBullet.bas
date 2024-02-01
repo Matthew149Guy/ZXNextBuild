@@ -84,6 +84,9 @@ SUB ALIEN_BULLET_Start(x AS INTEGER, y AS INTEGER, dx AS INTEGER, dy AS INTEGER)
 
         ' increment alien bullet count
         AlienBulletCount = AlienBulletCount + 1
+
+        ' play alien bulet sound
+        PlaySFX(39)
     END IF
 END SUB
 

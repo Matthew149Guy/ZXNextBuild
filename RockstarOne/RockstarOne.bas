@@ -5,14 +5,18 @@
 ' === Includes ===
 ' ================
 #DEFINE NEX
+#DEFINE IM2
+
 #INCLUDE <nextlib.bas>
 #include <keys.bas>
-#include "./PlayerShip.bas"
+
+#INCLUDE "./PlayerShip.bas"
 #INCLUDE "./Rocks.bas"
 #INCLUDE "./Explosion.bas"
 #INCLUDE "./Alien.bas"
 #INCLUDE "./Collision.bas"
 #INCLUDE "./BonusScore.bas"
+#INCLUDE "./SoundFX.bas"
 
 ' =================
 ' === Constants ===
@@ -51,9 +55,18 @@ SUB InitialiseSystem()
     ' load font
     LoadSDBank("font4.spr",0,0,0,40)
 
+    ' initialise sound
     ' load sfx data
-    LoadSDBank("RockstarOneSFX.afb", 0, 0, 0, 41)
-    InitSFX(41)
+    LoadSDBank("RockstarOneSFX.afb", 0, 0, 0, 43)
+    LoadSDBank("vt24000.bin", 0, 0, 0, 41)
+    LoadSDBank("level1.pt3", 0, 0, 0, 42)
+    InitSFX(43)
+    InitMusic(41, 42, 0000)
+    SetUpIM()
+
+    PlaySFX(0)
+
+    EnableSFX
 
     ' initialise player ship
     SHIP_Initialise()
@@ -85,6 +98,8 @@ DIM delaycount AS BYTE = 0
 DIM message AS STRING
 DIM fireKeyDown AS UBYTE = 0
 
+EnableMusic
+
 DO
     IF MultiKeys(KEYSPACE)
         EXIT DO
@@ -93,6 +108,7 @@ DO
     IF delaycount > 3
         IF MultiKeys(KEYW)
             SHIP_ThrustShip(1)
+            PlaySFX(1)
         ELSE
             SHIP_ThrustShip(0)
         END IF
@@ -108,6 +124,7 @@ DO
         IF MultiKeys(KEYL)
             IF fireKeyDown = 0
                 BULLET_StartBullet(Ship_X, Ship_Y, ShipAnimation(Ship_CurrentFrame, SHIP_ANIMATION_DX), ShipAnimation(Ship_CurrentFrame, SHIP_ANIMATION_DY))
+                PlaySFX(13)
                 fireKeyDown = 1
             END IF
         ELSE
@@ -150,3 +167,5 @@ DO
     WaitRetrace2(1)
     
 LOOP
+
+CallbackSFX()

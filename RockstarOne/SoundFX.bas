@@ -1,5 +1,5 @@
-#ifndef __SoundFX__
-#define __SoundFX__
+#ifndef __SOUNDFX__
+#define __SOUNDFX__
 
 ' ================
 ' === Includes ===
@@ -19,10 +19,10 @@
 ' =================
 
 ' ==========================
-' === SoundFX_Initialise ===
+' === SOUNDFX_Initialise ===
 ' ==========================
-SUB SoundFX_Initialise()
-    
+SUB SOUNDFX_Initialise()
+    	
 END SUB
 
 #endif
