@@ -35,17 +35,25 @@
 ' ========================
 SUB InitialiseSystem()
     NextRegA($7,3)					' 28mhz 
-    NextRegA($14,2270)					' black transparency 
+    NextRegA($14,227)					' black transparency 
     NextRegA($70,%00010000)			' enable 320x256 256col L2 
     NextRegA($69,%10000000)			' enables L2 
-    ClipLayer2(0,255,0,255)			' make all of L2 visible 
+    
+    
     'NextReg($15,%00000001) 
     asm 
         nextreg $56,34
         nextreg $57,35
         nextreg $43,%00100000
-        nextreg $15,%00000011
+        nextreg $15,%01100011
     end asm
+    ClipLayer2(0,255,0,255)			' make all of L2 visible 
+    ClipSprite(0, 255, 32, 255)
+
+    ' load image
+    LoadBMP("sprial.bmp")
+
+    ShowLayer2(1)
 
     ' load sprites
     LoadSDBank("RockstarOne.spr",0,0,0,34)
@@ -98,7 +106,12 @@ DIM delaycount AS BYTE = 0
 DIM message AS STRING
 DIM fireKeyDown AS UBYTE = 0
 
-EnableMusic
+'EnableMusic
+
+FL2Text(0, 0, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 40)
+FL2Text(1, 1, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 40)
+FL2Text(2, 2, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 40)
+FL2Text(3, 3, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789", 40)
 
 DO
     IF MultiKeys(KEYSPACE)
